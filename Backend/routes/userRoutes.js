@@ -8,9 +8,14 @@ const {
 } = require('../controllers/userController');
 
 const authMiddleware = require('../middlewares/authMiddleware');
-const uploadAvatar = require('../middlewares/uploadMiddleware');
+const uploadImage = require('../middlewares/uploadMiddleware');
 
-router.patch('/me/avatar', authMiddleware, uploadAvatar, updateAvatar);
+router.patch(
+    '/me/avatar',
+    authMiddleware,
+    uploadImage('profileImage'),
+    updateAvatar
+);
 
 router.patch('/me', authMiddleware, updateMyProfile);
 

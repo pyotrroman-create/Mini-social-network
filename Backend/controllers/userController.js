@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const User = require('../models/User');
+const validateImage = require('../utils/validateImage');
 
 const getUserProfile = async (req, res) => {
     try {
@@ -94,28 +95,7 @@ const updateAvatar = async (req, res) => {
             });
         }
 
-        const imageSignatures = {
-            'image/jpeg': (buffer) =>
-                buffer.length >= 3 &&
-                buffer.subarray(0, 3).equals(
-                    Buffer.from([0xFF, 0xD8, 0xFF])
-                ),
-
-            'image/png': (buffer) =>
-                buffer.length >= 8 &&
-                buffer.subarray(0, 8).equals(
-                    Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])
-                ),
-
-            'image/webp': (buffer) =>
-                buffer.length >= 12 &&
-                buffer.toString('ascii', 0, 4) === 'RIFF' &&
-                buffer.toString('ascii', 8, 12) === 'WEBP'
-        };
-
-        const isValidImage = imageSignatures[req.file.mimetype];
-
-        if (!isValidImage || !isValidImage(req.file.buffer)) {
+        if (!validateImage(req.file)) {
             return res.status(400).json({
                 message: 'Invalid image format'
             });

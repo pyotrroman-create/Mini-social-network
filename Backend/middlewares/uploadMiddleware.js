@@ -24,24 +24,26 @@ const upload = multer({
     }
 });
 
-const uploadAvatar = (req, res, next) => {
-    upload.single('profileImage')(req, res, (error) => {
-        if (!error) {
-            return next();
-        }
+const uploadImage = (fieldName) => {
+    return (req, res, next) => {
+        upload.single(fieldName)(req, res, (error) => {
+            if (!error) {
+                return next();
+            }
 
-        if (error instanceof multer.MulterError) {
+            if (error instanceof multer.MulterError) {
+                return res.status(400).json({
+                    message: error.code === 'LIMIT_FILE_SIZE'
+                        ? 'Image must not exceed 2 MB'
+                        : 'Invalid image upload'
+                });
+            }
+
             return res.status(400).json({
-                message: error.code === 'LIMIT_FILE_SIZE'
-                    ? 'Image must not exceed 2 MB'
-                    : 'Invalid image upload'
+                message: error.message
             });
-        }
-
-        return res.status(400).json({
-            message: error.message
         });
-    });
+    };
 };
 
-module.exports = uploadAvatar;
+module.exports = uploadImage;
