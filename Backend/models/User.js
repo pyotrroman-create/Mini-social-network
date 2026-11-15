@@ -27,7 +27,20 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+
+    bio: {
+        type: String,
+        default: '',
+        trim: true,
+        maxlength: 500
+    },
+
+    profileImage: {
+        type: String,
+        default: ''
     }
+
 });
 
 userSchema.pre('save', async function () {

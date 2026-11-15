@@ -6,9 +6,31 @@ const register = async (req, res) => {
     try {
         const { email, fullName, username, password } = req.body;
 
-        if (!email || !fullName || !username || !password) {
+        if (
+            typeof email !== 'string' ||
+            typeof fullName !== 'string' ||
+            typeof username !== 'string' ||
+            typeof password !== 'string'
+        ) {
+            return res.status(400).json({
+                message: 'All fields must be strings'
+            });
+        }
+
+        if (
+            !email.trim() ||
+            !fullName.trim() ||
+            !username.trim() ||
+            !password
+        ) {
             return res.status(400).json({
                 message: 'All fields are required'
+            });
+        }
+
+        if (password.length < 8) {
+            return res.status(400).json({
+                message: 'Password must be at least 8 characters long'
             });
         }
 
@@ -73,7 +95,16 @@ const login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        if (!email || !password) {
+        if (
+            typeof email !== 'string' ||
+            typeof password !== 'string'
+        ) {
+            return res.status(400).json({
+                message: 'Email and password must be strings'
+            });
+        }
+
+        if (!email.trim() || !password) {
             return res.status(400).json({
                 message: 'Email and password are required'
             });
@@ -107,7 +138,6 @@ const login = async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: '7d' }
         );
-
         return res.status(200).json({
             message: 'Login successful',
             token,
