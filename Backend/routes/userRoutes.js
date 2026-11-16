@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { followUser, unfollowUser, getUserFollowers, getUserFollowing } = require('../controllers/followController');
 
 const {
     getUserProfile,
@@ -21,6 +22,14 @@ router.patch(
 router.patch('/me', authMiddleware, updateMyProfile);
 
 router.get('/search', searchUsers);
+
+router.post('/:userId/follow', authMiddleware, followUser);
+
+router.delete('/:userId/follow', authMiddleware, unfollowUser);
+
+router.get('/:userId/followers', getUserFollowers);
+
+router.get('/:userId/following', getUserFollowing);
 
 router.get('/:id', getUserProfile);
 
