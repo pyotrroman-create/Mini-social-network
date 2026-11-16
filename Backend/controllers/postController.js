@@ -159,29 +159,29 @@ const updatePost = async (req, res) => {
         }
 
         if (caption !== undefined) {
-    if (
-        typeof caption !== 'string' ||
-        caption.trim().length > 2200
-    ) {
-        return res.status(400).json({
-            message: 'Caption must be a string of up to 2200 characters'
-        });
-    }
+            if (
+                typeof caption !== 'string' ||
+                caption.trim().length > 2200
+            ) {
+                return res.status(400).json({
+                    message: 'Caption must be a string of up to 2200 characters'
+                });
+            }
 
-    post.caption = caption.trim();
-}
+            post.caption = caption.trim();
+        }
 
-if (req.file) {
-    if (!validateImage(req.file)) {
-        return res.status(400).json({
-            message: 'Invalid image format'
-        });
-    }
+        if (req.file) {
+            if (!validateImage(req.file)) {
+                return res.status(400).json({
+                    message: 'Invalid image format'
+                });
+            }
 
-    const imageBase64 = req.file.buffer.toString('base64');
+            const imageBase64 = req.file.buffer.toString('base64');
 
-    post.image = `data:${req.file.mimetype};base64,${imageBase64}`;
-}
+            post.image = `data:${req.file.mimetype};base64,${imageBase64}`;
+        }
 
         await post.save();
 
@@ -238,6 +238,27 @@ const deletePost = async (req, res) => {
     }
 };
 
+const getExplorePosts = async (req, res) => {
+    try {
+        const postsCount = await Post.countDocuments();
+
+        const posts = await Post.aggregate([
+            { $sample: { size: postsCount } }
+        ]);
+
+        return res.status(200).json({
+            posts
+        });
+
+    } catch (error) {
+        console.error('Get explore posts error:', error);
+
+        return res.status(500).json({
+            message: 'Failed to get explore posts'
+        });
+    }
+};
+
 module.exports = {
-    createPost, getPostById, getUserPosts, getAllPosts, updatePost, deletePost
+    createPost, getPostById, getUserPosts, getAllPosts, updatePost, deletePost, getExplorePosts
 };

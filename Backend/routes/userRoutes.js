@@ -4,7 +4,8 @@ const router = express.Router();
 const {
     getUserProfile,
     updateMyProfile,
-    updateAvatar
+    updateAvatar,
+    searchUsers
 } = require('../controllers/userController');
 
 const authMiddleware = require('../middlewares/authMiddleware');
@@ -18,6 +19,8 @@ router.patch(
 );
 
 router.patch('/me', authMiddleware, updateMyProfile);
+
+router.get('/search', searchUsers);
 
 router.get('/:id', getUserProfile);
 

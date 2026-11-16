@@ -122,4 +122,34 @@ const updateAvatar = async (req, res) => {
     }
 };
 
-module.exports = { getUserProfile, updateMyProfile, updateAvatar };
+const searchUsers = async (req, res) => {
+    try {
+        const { q } = req.query;
+
+        if (typeof q !== 'string' || !q.trim()) {
+            return res.status(400).json({
+                message: 'Search query is required'
+            });
+        }
+
+        const search = q.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+        const users = await User.find({
+            $or: [
+                { fullName: { $regex: search, $options: 'i' } },
+                { username: { $regex: search, $options: 'i' } }
+            ]
+        }).select('-password -email');
+
+        return res.status(200).json({ users });
+
+    } catch (error) {
+        console.error('Search users error:', error);
+
+        return res.status(500).json({
+            message: 'Failed to search users'
+        });
+    }
+};
+
+module.exports = { getUserProfile, updateMyProfile, updateAvatar, searchUsers };
