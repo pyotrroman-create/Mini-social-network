@@ -35,6 +35,13 @@ const register = async (req, res) => {
         }
 
         const normalizedEmail = email.trim().toLowerCase();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(normalizedEmail)) {
+            return res.status(400).json({
+                message: 'Invalid email format'
+            });
+        }
         const normalizedUsername = username.trim();
 
         const existingUser = await User.findOne({
@@ -45,8 +52,16 @@ const register = async (req, res) => {
         });
 
         if (existingUser) {
+            if (existingUser.username === normalizedUsername) {
+                return res.status(409).json({
+                    field: 'username',
+                    message: 'This username is already taken.'
+                });
+            }
+
             return res.status(409).json({
-                message: 'Email or username already exists'
+                field: 'email',
+                message: 'This email is already registered.'
             });
         }
 
@@ -80,6 +95,17 @@ const register = async (req, res) => {
         console.error('Registration error:', error);
 
         if (error.code === 11000) {
+            const field = Object.keys(error.keyPattern || {})[0];
+
+            if (field === 'username' || field === 'email') {
+                return res.status(409).json({
+                    field,
+                    message: field === 'username'
+                        ? 'This username is already taken.'
+                        : 'This email is already registered.'
+                });
+            }
+
             return res.status(409).json({
                 message: 'Email or username already exists'
             });
@@ -93,32 +119,35 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { identifier, password } = req.body;
 
         if (
-            typeof email !== 'string' ||
+            typeof identifier !== 'string' ||
             typeof password !== 'string'
         ) {
             return res.status(400).json({
-                message: 'Email and password must be strings'
+                message: 'Username or email and password must be strings'
             });
         }
 
-        if (!email.trim() || !password) {
+        if (!identifier.trim() || !password) {
             return res.status(400).json({
-                message: 'Email and password are required'
+                message: 'Username or email and password are required'
             });
         }
 
-        const normalizedEmail = email.trim().toLowerCase();
+        const normalizedIdentifier = identifier.trim().toLowerCase();
 
         const user = await User.findOne({
-            email: normalizedEmail
+            $or: [
+                { email: normalizedIdentifier },
+                { username: normalizedIdentifier }
+            ]
         });
 
         if (!user) {
             return res.status(401).json({
-                message: 'Invalid email or password'
+                message: 'Invalid username/email or password'
             });
         }
 
@@ -129,7 +158,7 @@ const login = async (req, res) => {
 
         if (!isPasswordValid) {
             return res.status(401).json({
-                message: 'Invalid email or password'
+                message: 'Invalid username/email or password'
             });
         }
 
@@ -138,6 +167,7 @@ const login = async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: '7d' }
         );
+
         return res.status(200).json({
             message: 'Login successful',
             token,

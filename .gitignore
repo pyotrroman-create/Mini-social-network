@@ -1,2 +1,11 @@
+
 node_modules/
+
 .env
+
+*-response.json
+verify-post.json
+
+beach-wallpaper-3840x2160-gentle-waves-coast-26515.jpg
+
+/*.json
