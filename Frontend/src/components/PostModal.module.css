@@ -1,0 +1,438 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 245px;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 47px;
+    box-sizing: border-box;
+    background: #000000A6;
+}
+
+.modal {
+    display: flex;
+    flex: 0 0 auto;
+    width: 1001.31px;
+    height: 722px;
+    max-width: calc(100% - 32px);
+    max-height: calc(100% - 63px);
+    overflow: hidden;
+    background: #fff;
+    transform: translateX(2.4px);
+}
+
+.imageSection {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 577.6px;
+    width: 577.6px;
+    min-width: 0;
+    background: #111;
+}
+
+.imageSection img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.details {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 423.71px;
+    width: 423.71px;
+    min-width: 0;
+    min-height: 0;
+    background: #fff;
+    overflow: hidden;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 7.64px;
+    flex: 0 0 51.69px;
+    width: 100%;
+    height: 51.69px;
+    padding: 0 9.32px;
+    box-sizing: border-box;
+    background: #fff;
+    border-bottom: 0.85px solid #efefef;
+}
+
+.author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 35.59px;
+    width: 35.59px;
+    height: 35.59px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.avatarContainer {
+    position: relative;
+    display: block;
+    flex: 0 0 35.59px;
+    width: 35.59px;
+    height: 35.59px;
+}
+
+.avatar {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 27.12px;
+    height: 27.12px;
+    border-radius: 50%;
+    object-fit: cover;
+    transform: translate(-50%, -50%);
+}
+
+.avatarRing {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 35.59px;
+    height: 35.59px;
+    pointer-events: none;
+}
+
+.authorInfo {
+    display: flex;
+    align-items: center;
+    flex: 0 0 326.26px;
+    width: 326.26px;
+    height: 22.03px;
+    min-width: 0;
+}
+
+.authorName {
+    display: block;
+    flex: 0 1 auto;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: 'Roboto', sans-serif;
+    font-size: 11.86px;
+    font-weight: 600;
+    line-height: 15.25px;
+    letter-spacing: 0;
+    color: #262626;
+    cursor: pointer;
+}
+
+.dot {
+    display: block;
+    flex: 0 0 5.64px;
+    width: 5.64px;
+    height: 15.25px;
+    margin-left: 3.38px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 11.86px;
+    font-weight: 400;
+    line-height: 15.25px;
+    color: #000;
+    text-align: center;
+}
+
+.followButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 78.07px;
+    width: 78.07px;
+    height: 15.25px;
+    margin-left: 4.92px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font-family: 'Roboto', sans-serif;
+    font-size: 11.86px;
+    font-weight: 600;
+    line-height: 15.25px;
+    letter-spacing: 0;
+    color: #0095f6;
+    cursor: pointer;
+}
+
+.followButton:disabled {
+    opacity: 0.5;
+    cursor: wait;
+}
+
+.comments {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 20px;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0 11.86px 20px 13.56px;
+    box-sizing: border-box;
+    scrollbar-width: thin;
+}
+
+.descriptionItem,
+.comment {
+    display: flex;
+    align-items: flex-start;
+    flex: 0 0 auto;
+    gap: 15.25px;
+    width: 100%;
+    min-height: 46.6px;
+    box-sizing: border-box;
+    padding: 10.17px 0 9.32px;
+}
+
+.commentAvatar {
+    display: block;
+    flex: 0 0 27.12px;
+    width: 27.12px;
+    height: 27.12px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #efefef;
+    border: none;
+    box-shadow: none;
+}
+
+.commentBody {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.commentText {
+    display: block;
+    margin: 0;
+    color: #000;
+    font-family: 'Roboto', sans-serif;
+    font-size: 11.86px;
+    font-weight: 400;
+    font-style: normal;
+    line-height: 15.25px;
+    letter-spacing: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.commentText strong {
+    display: inline;
+    margin-right: 3.38px;
+    color: #262626;
+    font-family: 'Roboto', sans-serif;
+    font-size: 11.86px;
+    font-weight: 600;
+    font-style: normal;
+    line-height: 15.25px;
+    letter-spacing: 0;
+}
+
+.time {
+    display: block;
+    align-self: flex-start;
+    margin-top: 8.05px;
+    color: #737373;
+    font-family: 'Roboto', sans-serif;
+    font-size: 10.17px;
+    font-weight: 400;
+    font-style: normal;
+    line-height: 13.56px;
+    letter-spacing: 0;
+    white-space: nowrap;
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;
+    gap: 0;
+    padding: 0;
+    border-top: 0.85px solid #dbdbdb;
+}
+
+.actionButtons {
+    display: flex;
+    align-items: center;
+    gap: 13.56px;
+    width: 100%;
+    height: 46.61px;
+    padding: 0 13.56px;
+    box-sizing: border-box;
+}
+
+.iconButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 20.34px;
+    width: 20.34px;
+    height: 20.34px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #000;
+    cursor: pointer;
+}
+
+.iconButton:disabled {
+    cursor: wait;
+}
+
+.iconButton svg,
+.actionIcon {
+    display: block;
+    width: 20.34px;
+    height: 20.34px;
+    object-fit: contain;
+}
+
+.liked {
+    color: #ff3040;
+}
+
+.likesCount {
+    display: block;
+    margin: 0 13.56px;
+    color: #000;
+    font-family: 'Roboto', sans-serif;
+    font-size: 11.86px;
+    font-weight: 600;
+    line-height: 15.25px;
+    letter-spacing: 0;
+}
+
+.postTime {
+    display: block;
+    margin: 2.54px 13.56px 11.02px;
+    color: #737373;
+    font-family: 'Roboto', sans-serif;
+    font-size: 10.17px;
+    font-weight: 400;
+    line-height: 13.56px;
+    letter-spacing: 0.17px;
+}
+
+.commentForm {
+    display: flex;
+    align-items: center;
+    flex: 0 0 44.91px;
+    width: 100%;
+    height: 44.91px;
+    gap: 13.56px;
+    padding: 0 13.56px;
+    box-sizing: border-box;
+    border-top: 0.85px solid #dbdbdb;
+}
+
+.emojiWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 0 0 20.34px;
+}
+
+.emojiButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20.34px;
+    height: 20.34px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #000;
+    cursor: pointer;
+}
+
+.emojiPicker {
+    position: absolute;
+    left: 0;
+    bottom: calc(100% + 16px);
+    z-index: 10;
+    max-width: calc(100vw - 48px);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
+}
+
+.commentInput {
+    flex: 1;
+    min-width: 0;
+    height: 15.25px;
+    padding: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: #000;
+    font-family: 'Roboto', sans-serif;
+    font-size: 11.86px;
+    font-weight: 400;
+    line-height: 15.25px;
+    letter-spacing: 0;
+}
+
+.commentInput::placeholder {
+    color: #737373;
+    opacity: 1;
+}
+
+.sendButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 84.88px;
+    width: 84.88px;
+    height: 15.25px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #0095f6;
+    font-family: 'Roboto', sans-serif;
+    font-size: 11.86px;
+    font-weight: 600;
+    line-height: 15.25px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.sendButton:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.commentError {
+    margin: 0;
+    padding: 0 16px 10px;
+    color: #ed4956;
+    font-size: 12px;
+}
+
+.status {
+    margin: auto;
+    color: #737373;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+}
+
+.emojiIcon {
+    display: block;
+    width: 20.34px;
+    height: 20.34px;
+    object-fit: contain;
+}

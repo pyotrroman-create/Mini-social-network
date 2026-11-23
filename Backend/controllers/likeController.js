@@ -106,4 +106,22 @@ const getPostLikes = async (req, res) => {
     }
 };
 
-module.exports = { addLike, removeLike, getPostLikes };
+const getMyLikedPosts = async (req, res) => {
+    try {
+        const likes = await Like.find({
+            user: req.user._id,
+        }).select('post')
+
+        return res.status(200).json({
+            postIds: likes.map((like) => String(like.post)),
+        })
+    } catch (error) {
+        console.error('Get my likes error:', error)
+
+        return res.status(500).json({
+            message: 'Failed to get liked posts',
+        })
+    }
+}
+
+module.exports = { addLike, removeLike, getPostLikes, getMyLikedPosts };

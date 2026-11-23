@@ -1,0 +1,75 @@
+.layout {
+    min-height: 100vh;
+    background: #ffffff;
+}
+
+.main {
+    max-width: 1195px;
+    max-width: none;
+    margin-left: 245px;
+    padding: 58px 78px 0;
+    box-sizing: border-box;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 403.82px);
+    column-gap: 40px;
+    row-gap: 23.38px;
+}
+
+.status {
+    padding: 40px;
+    text-align: center;
+    color: #737373;
+}
+
+.endMessage {
+    position: relative;
+    width: 404.82px;
+    height: 216.19px;
+    margin: 10.38px 0 16.81px 223px;
+    text-align: center;
+}
+
+.updatesImage {
+    position: absolute;
+    top: 27.56px;
+    left: 161.07px;
+    display: block;
+    width: 82.69px;
+    height: 82.69px;
+    object-fit: contain;
+}
+
+.updatesTitle {
+    position: absolute;
+    top: 121.02px;
+    left: 75.67px;
+    width: 253.66px;
+    margin: 0;
+    color: #000000;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16.69px;
+    font-weight: 400;
+    line-height: 21.53px;
+    letter-spacing: 0;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.updatesDescription {
+    position: absolute;
+    top: 145.13px;
+    left: 32.6px;
+    width: 339.79px;
+    margin: 0;
+    color: #737373;
+    font-family: 'Roboto', sans-serif;
+    font-size: 12.06px;
+    font-weight: 400;
+    line-height: 15.5px;
+    letter-spacing: 0;
+    text-align: center;
+    white-space: nowrap;
+}

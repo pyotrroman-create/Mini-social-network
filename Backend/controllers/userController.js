@@ -2,6 +2,28 @@ const mongoose = require('mongoose');
 const User = require('../models/User');
 const validateImage = require('../utils/validateImage');
 
+const getMe = async (req, res) => {
+    try {
+        const user = req.user;
+
+        return res.status(200).json({
+            user: {
+                _id: user._id,
+                username: user.username,
+                fullName: user.fullName,
+                bio: user.bio,
+                profileImage: user.profileImage
+            }
+        });
+    } catch (error) {
+        console.error('Get current user error:', error);
+
+        return res.status(500).json({
+            message: 'Failed to retrieve current user'
+        });
+    }
+};
+
 const getUserProfile = async (req, res) => {
     try {
         const { id } = req.params;
@@ -23,7 +45,6 @@ const getUserProfile = async (req, res) => {
         return res.status(200).json({
             user
         });
-
     } catch (error) {
         console.error('Get user profile error:', error);
 
@@ -46,7 +67,10 @@ const updateMyProfile = async (req, res) => {
         const user = req.user;
 
         if (fullName !== undefined) {
-            if (typeof fullName !== 'string' || !fullName.trim()) {
+            if (
+                typeof fullName !== 'string' ||
+                !fullName.trim()
+            ) {
                 return res.status(400).json({
                     message: 'Full name must be a non-empty string'
                 });
@@ -56,7 +80,10 @@ const updateMyProfile = async (req, res) => {
         }
 
         if (bio !== undefined) {
-            if (typeof bio !== 'string' || bio.trim().length > 500) {
+            if (
+                typeof bio !== 'string' ||
+                bio.trim().length > 500
+            ) {
                 return res.status(400).json({
                     message: 'Bio must be a string of up to 500 characters'
                 });
@@ -70,14 +97,13 @@ const updateMyProfile = async (req, res) => {
         return res.status(200).json({
             message: 'Profile updated successfully',
             user: {
-                id: user._id,
+                _id: user._id,
                 username: user.username,
                 fullName: user.fullName,
                 bio: user.bio,
                 profileImage: user.profileImage
             }
         });
-
     } catch (error) {
         console.error('Update profile error:', error);
 
@@ -112,7 +138,6 @@ const updateAvatar = async (req, res) => {
             message: 'Avatar updated successfully',
             profileImage: req.user.profileImage
         });
-
     } catch (error) {
         console.error('Update avatar error:', error);
 
@@ -132,17 +157,28 @@ const searchUsers = async (req, res) => {
             });
         }
 
-        const search = q.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const search = q
+            .trim()
+            .replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
         const users = await User.find({
             $or: [
-                { fullName: { $regex: search, $options: 'i' } },
-                { username: { $regex: search, $options: 'i' } }
+                {
+                    fullName: {
+                        $regex: search,
+                        $options: 'i'
+                    }
+                },
+                {
+                    username: {
+                        $regex: search,
+                        $options: 'i'
+                    }
+                }
             ]
         }).select('-password -email');
 
         return res.status(200).json({ users });
-
     } catch (error) {
         console.error('Search users error:', error);
 
@@ -152,4 +188,10 @@ const searchUsers = async (req, res) => {
     }
 };
 
-module.exports = { getUserProfile, updateMyProfile, updateAvatar, searchUsers };
+module.exports = {
+    getMe,
+    getUserProfile,
+    updateMyProfile,
+    updateAvatar,
+    searchUsers
+};

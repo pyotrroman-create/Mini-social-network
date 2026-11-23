@@ -240,24 +240,43 @@ const deletePost = async (req, res) => {
 
 const getExplorePosts = async (req, res) => {
     try {
-        const postsCount = await Post.countDocuments();
+        const count = await Post.countDocuments()
+
+        if (count === 0) {
+            return res.status(200).json({ posts: [] })
+        }
 
         const posts = await Post.aggregate([
-            { $sample: { size: postsCount } }
-        ]);
+            { $sample: { size: count } },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'author',
+                    foreignField: '_id',
+                    as: 'author',
+                },
+            },
+            { $unwind: '$author' },
+            {
+                $project: {
+                    image: 1,
+                    'author._id': 1,
+                    'author.username': 1,
+                    'author.fullName': 1,
+                    'author.profileImage': 1,
+                },
+            },
+        ])
 
-        return res.status(200).json({
-            posts
-        });
-
+        return res.status(200).json({ posts })
     } catch (error) {
-        console.error('Get explore posts error:', error);
+        console.error('Get explore posts error:', error)
 
         return res.status(500).json({
-            message: 'Failed to get explore posts'
-        });
+            message: 'Failed to get explore posts',
+        })
     }
-};
+}
 
 module.exports = {
     createPost, getPostById, getUserPosts, getAllPosts, updatePost, deletePost, getExplorePosts

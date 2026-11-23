@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { addLike, removeLike, getPostLikes } = require('../controllers/likeController');
+const { addLike, removeLike, getPostLikes, getMyLikedPosts, } = require('../controllers/likeController');
 const { addComment, getPostComments } = require('../controllers/commentController');
 
 const {
@@ -37,6 +37,8 @@ router.get('/', getAllPosts);
 router.get('/user/:userId', getUserPosts);
 
 router.get('/explore', getExplorePosts);
+
+router.get('/me/likes', authMiddleware, getMyLikedPosts);
 
 router.get('/:id', getPostById);
 

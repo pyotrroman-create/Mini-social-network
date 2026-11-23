@@ -1,0 +1,206 @@
+.card {
+    position: relative;
+    width: 403.82px;
+    height: 716.62px;
+    min-width: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    font-family: 'Roboto', sans-serif;
+}
+
+.header {
+    width: 100%;
+    height: 41.34px;
+    flex: 0 0 41.34px;
+    display: flex;
+    align-items: flex-start;
+    box-sizing: border-box;
+}
+
+.author {
+    display: flex;
+    align-items: flex-start;
+    gap: 6.03px;
+    min-width: 0;
+    height: 36.18px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    color: inherit;
+}
+
+.avatarContainer {
+    position: relative;
+    display: block;
+    width: 36.18px;
+    height: 36.18px;
+    flex: 0 0 36.18px;
+}
+
+.avatar {
+    position: absolute;
+    top: 4.31px;
+    left: 4.31px;
+    width: 26.56px;
+    height: 27.56px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.avatarRing {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 36.175px;
+    height: 36.175px;
+    pointer-events: none;
+}
+
+.username {
+    display: block;
+    position: relative;
+    top: 2.58px;
+    max-width: 150px;
+    color: #000000;
+    font-family: 'Roboto', sans-serif;
+    font-size: 12.06px;
+    font-weight: 600;
+    line-height: 15.5px;
+    letter-spacing: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+}
+
+.follow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 79.35px;
+    height: 15.5px;
+    flex: 0 0 79.35px;
+    position: relative;
+    top: 2.58px;
+    margin-left: 37.19px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #0095f6;
+    font-family: 'Roboto', sans-serif;
+    font-size: 12.06px;
+    font-weight: 600;
+    line-height: 15.5px;
+    letter-spacing: 0;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.follow:disabled {
+    opacity: 0.5;
+    cursor: wait;
+}
+
+.imageButton {
+    display: block;
+    width: 403.82px;
+    height: 505.59px;
+    flex: 0 0 505.59px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    background: #f4f4f4;
+    cursor: pointer;
+}
+
+.image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.details {
+    width: 100%;
+    height: 155.04px;
+    flex: 0 0 155.04px;
+    box-sizing: border-box;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 13.78px;
+    width: 100%;
+    height: 34.45px;
+    margin-top: 3.45px;
+}
+
+.action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20.67px;
+    height: 20.67px;
+    flex: 0 0 20.67px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #000000;
+    cursor: pointer;
+}
+
+.action svg {
+    display: block;
+    width: 20.67px;
+    height: 20.67px;
+}
+
+.action:hover {
+    opacity: 0.65;
+}
+
+.action:disabled {
+    cursor: wait;
+}
+
+.likes {
+    display: block;
+    width: 172.33px;
+    height: 14.21px;
+    margin-top: 3.88px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #000000;
+    font-family: 'Roboto', sans-serif;
+    font-size: 12.06px;
+    font-weight: 600;
+    line-height: 14.21px;
+    letter-spacing: 0;
+    text-align: left;
+    cursor: pointer;
+}
+
+.bottomSpace {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.divider {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 0.86px;
+    background: #dbdbdb;
+}
+
+.actionIcon {
+    display: block;
+    width: 20.67px;
+    height: 20.67px;
+}

@@ -1,9 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const { followUser, unfollowUser, getUserFollowers, getUserFollowing } = require('../controllers/followController');
+
+const {
+    followUser,
+    unfollowUser,
+    getUserFollowers,
+    getUserFollowing
+} = require('../controllers/followController');
 
 const {
     getUserProfile,
+    getMe,
     updateMyProfile,
     updateAvatar,
     searchUsers
@@ -11,6 +18,8 @@ const {
 
 const authMiddleware = require('../middlewares/authMiddleware');
 const uploadImage = require('../middlewares/uploadMiddleware');
+
+router.get('/me', authMiddleware, getMe);
 
 router.patch(
     '/me/avatar',

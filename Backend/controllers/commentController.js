@@ -19,12 +19,6 @@ const addComment = async (req, res) => {
             });
         }
 
-        if (text.trim().length > 1000) {
-            return res.status(400).json({
-                message: 'Comment must not exceed 1000 characters'
-            });
-        }
-
         const post = await Post.findById(postId);
 
         if (!post) {
@@ -63,10 +57,12 @@ const getPostComments = async (req, res) => {
             });
         }
 
+
         const comments = await Comment.find({
             post: postId
-        }).sort({ createdAt: -1 });
-
+        })
+            .populate('user', 'username profileImage')
+            .sort({ createdAt: -1 });
         return res.status(200).json({
             comments
         });
