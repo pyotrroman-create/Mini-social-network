@@ -1,4 +1,3 @@
-
 import api from './axios'
 
 export const getMe = async () => {
@@ -27,4 +26,25 @@ export const followUser = (userId) => {
 
 export const unfollowUser = (userId) => {
     return api.delete(`/users/${userId}/follow`)
+}
+
+export const searchUsers = async (query) => {
+    const { data } = await api.get('/users/search', {
+        params: { q: query },
+    })
+
+    return data.users
+}
+
+export const updateMyProfile = async (profile) => {
+    const { data } = await api.patch('/users/me', profile)
+    return data.user
+}
+
+export const updateMyAvatar = async (file) => {
+    const formData = new FormData()
+    formData.append('profileImage', file)
+
+    const { data } = await api.patch('/users/me/avatar', formData)
+    return data.profileImage
 }

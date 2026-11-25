@@ -13,8 +13,9 @@ const postSchema = new mongoose.Schema({
 
     caption: {
         type: String,
-        default: '',
+        required: true,
         trim: true,
+        minlength: 1,
         maxlength: 2200
     },
 

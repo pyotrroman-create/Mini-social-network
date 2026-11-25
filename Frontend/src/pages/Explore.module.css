@@ -1,0 +1,54 @@
+.layout {
+    min-height: 100vh;
+    background: #ffffff;
+}
+
+.main {
+    box-sizing: border-box;
+    min-height: calc(100vh - 80px);
+    margin-left: 245px;
+    padding: 41px 0;
+}
+
+.postsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 316.99px);
+    grid-auto-rows: 316.99px;
+    gap: 4px;
+    align-content: start;
+    width: 975px;
+    min-height: 1376px;
+    box-sizing: border-box;
+    margin-left: 103px;
+    margin-right: 117px;
+    padding: 48px 0 48.03px 16.03px;
+}
+
+.postButton {
+    display: block;
+    width: 316.99px;
+    height: 316.99px;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.postImage {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.status {
+    width: 975px;
+    box-sizing: border-box;
+    margin-left: 103px;
+    padding: 24px 16.03px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    color: #737373;
+}

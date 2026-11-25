@@ -46,3 +46,19 @@ export const addPostComment = async (postId, text) => {
 
     return data.comment
 }
+
+export const deletePost = async (postId) => {
+    const { data } = await api.delete(`/posts/${postId}`)
+    return data
+}
+
+export const createPost = async (image, caption) => {
+    const formData = new FormData()
+
+    formData.append('image', image)
+    formData.append('caption', caption.trim())
+
+    const { data } = await api.post('/posts', formData)
+
+    return data.post
+}

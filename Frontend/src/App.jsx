@@ -6,6 +6,9 @@ import Profile from './pages/Profile'
 import PostModal from './components/PostModal'
 import ProtectedRoute from './components/ProtectedRoute'
 import { FeedProvider } from './context/FeedContext.jsx'
+import Explore from './pages/Explore'
+import NotFound from './pages/NotFound'
+import EditProfile from './pages/EditProfile'
 
 function App() {
   const location = useLocation()
@@ -36,10 +39,37 @@ function App() {
         />
 
         <Route
+          path="/explore"
+          element={
+            <ProtectedRoute>
+              <Explore />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
           path="/posts/:postId"
           element={
             <ProtectedRoute>
               <PostModal />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/accounts/edit"
+          element={
+            <ProtectedRoute>
+              <EditProfile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="*"
+          element={
+            <ProtectedRoute>
+              <NotFound />
             </ProtectedRoute>
           }
         />

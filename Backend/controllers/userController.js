@@ -12,6 +12,7 @@ const getMe = async (req, res) => {
                 username: user.username,
                 fullName: user.fullName,
                 bio: user.bio,
+                website: user.website,
                 profileImage: user.profileImage
             }
         });
@@ -54,11 +55,16 @@ const getUserProfile = async (req, res) => {
     }
 };
 
+
 const updateMyProfile = async (req, res) => {
     try {
-        const { fullName, bio } = req.body;
+        const { username, website, bio } = req.body;
 
-        if (fullName === undefined && bio === undefined) {
+        if (
+            username === undefined &&
+            website === undefined &&
+            bio === undefined
+        ) {
             return res.status(400).json({
                 message: 'No profile fields provided'
             });
@@ -66,26 +72,52 @@ const updateMyProfile = async (req, res) => {
 
         const user = req.user;
 
-        if (fullName !== undefined) {
+        if (username !== undefined) {
             if (
-                typeof fullName !== 'string' ||
-                !fullName.trim()
+                typeof username !== 'string' ||
+                !/^[a-zA-Z0-9._]{1,30}$/.test(username.trim())
             ) {
                 return res.status(400).json({
-                    message: 'Full name must be a non-empty string'
+                    message: 'Username must contain 1–30 letters, numbers, dots or underscores'
                 });
             }
 
-            user.fullName = fullName.trim();
+            user.username = username.trim().toLowerCase();
+        }
+
+        if (website !== undefined) {
+            if (typeof website !== 'string' || website.trim().length > 2048) {
+                return res.status(400).json({
+                    message: 'Invalid website'
+                });
+            }
+
+            const value = website.trim();
+
+            if (value) {
+                try {
+                    const url = new URL(value);
+
+                    if (!['http:', 'https:'].includes(url.protocol) || !url.hostname.includes('.')) {
+                        throw new Error('Invalid URL');
+                    }
+                } catch {
+                    return res.status(400).json({
+                        message: 'Website must be a valid http or https URL'
+                    });
+                }
+            }
+
+            user.website = value;
         }
 
         if (bio !== undefined) {
             if (
                 typeof bio !== 'string' ||
-                bio.trim().length > 500
+                bio.trim().length > 150
             ) {
                 return res.status(400).json({
-                    message: 'Bio must be a string of up to 500 characters'
+                    message: 'Bio must be a string of up to 150 characters'
                 });
             }
 
@@ -101,10 +133,23 @@ const updateMyProfile = async (req, res) => {
                 username: user.username,
                 fullName: user.fullName,
                 bio: user.bio,
+                website: user.website,
                 profileImage: user.profileImage
             }
         });
     } catch (error) {
+        if (error.code === 11000 && error.keyPattern?.username) {
+            return res.status(409).json({
+                message: 'Username is already taken'
+            });
+        }
+
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({
+                message: error.message
+            });
+        }
+
         console.error('Update profile error:', error);
 
         return res.status(500).json({
@@ -112,6 +157,7 @@ const updateMyProfile = async (req, res) => {
         });
     }
 };
+
 
 const updateAvatar = async (req, res) => {
     try {
@@ -162,20 +208,10 @@ const searchUsers = async (req, res) => {
             .replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
         const users = await User.find({
-            $or: [
-                {
-                    fullName: {
-                        $regex: search,
-                        $options: 'i'
-                    }
-                },
-                {
-                    username: {
-                        $regex: search,
-                        $options: 'i'
-                    }
-                }
-            ]
+            username: {
+                $regex: search,
+                $options: 'i'
+            }
         }).select('-password -email');
 
         return res.status(200).json({ users });

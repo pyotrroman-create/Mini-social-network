@@ -79,6 +79,58 @@ function Profile() {
         }
     }, [userId])
 
+    useEffect(() => {
+        const handlePostDeleted = (event) => {
+            const deletedPostId = event.detail?.postId
+
+            if (!deletedPostId) return
+
+            setPosts((prevPosts) =>
+                prevPosts.filter(
+                    (post) => String(post._id) !== String(deletedPostId)
+                )
+            )
+        }
+
+        window.addEventListener('post:deleted', handlePostDeleted)
+
+        return () => {
+            window.removeEventListener('post:deleted', handlePostDeleted)
+        }
+    }, [])
+
+
+    useEffect(() => {
+        const handlePostCreated = (event) => {
+            const post = event.detail?.post
+
+            if (!post?._id) return
+
+            const authorId =
+                typeof post.author === 'object'
+                    ? post.author?._id
+                    : post.author
+
+            if (String(authorId) !== String(userId)) return
+
+            setPosts((prevPosts) => {
+                const alreadyExists = prevPosts.some(
+                    (item) => String(item._id) === String(post._id)
+                )
+
+                if (alreadyExists) return prevPosts
+
+                return [post, ...prevPosts]
+            })
+        }
+
+        window.addEventListener('post:created', handlePostCreated)
+
+        return () => {
+            window.removeEventListener('post:created', handlePostCreated)
+        }
+    }, [userId])
+
     const handleFollow = async () => {
         if (followLoading || feedLoading) return
 
@@ -108,6 +160,11 @@ function Profile() {
     const isOwnProfile =
         String(me?._id) === String(userId)
 
+    const websiteUrl = user?.website
+        && /^https?:\/\//i.test(user.website)
+        ? user.website
+        : null
+
     return (
         <div className={styles.layout}>
             <Sidebar />
@@ -128,11 +185,13 @@ function Profile() {
                 {!loading && !error && user && (
                     <>
                         <header className={styles.profileHeader}>
-
                             <div className={styles.avatarContainer}>
                                 <img
                                     className={styles.avatar}
-                                    src={user.profileImage || '/default-avatar.png'}
+                                    src={
+                                        user.profileImage ||
+                                        '/default-avatar.png'
+                                    }
                                     alt={`${user.username} avatar`}
                                 />
                             </div>
@@ -142,6 +201,18 @@ function Profile() {
                                     <h1 className={styles.username}>
                                         {user.username}
                                     </h1>
+
+                                    {isOwnProfile && (
+                                        <button
+                                            type="button"
+                                            className={styles.editProfileButton}
+                                            onClick={() =>
+                                                navigate('/accounts/edit')
+                                            }
+                                        >
+                                            Edit profile
+                                        </button>
+                                    )}
 
                                     {!isOwnProfile && (
                                         <div className={styles.buttons}>
@@ -188,7 +259,20 @@ function Profile() {
 
                                 <div className={styles.description}>
                                     {user.bio && (
-                                        <p className={styles.bio}>{user.bio}</p>
+                                        <p className={styles.bio}>
+                                            {user.bio}
+                                        </p>
+                                    )}
+
+                                    {websiteUrl && (
+                                        <a
+                                            className={styles.website}
+                                            href={websiteUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            {websiteUrl}
+                                        </a>
                                     )}
                                 </div>
                             </div>

@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useFeed } from '../context/useFeed'
+import SearchPanel from './SearchPanel'
 import styles from './Sidebar.module.css'
 import homeIcon from '../assets/icons/home.svg'
 import homeActiveIcon from '../assets/icons/home-active.svg'
@@ -11,6 +13,7 @@ import messagesIcon from '../assets/icons/messages.svg'
 import notificationsIcon from '../assets/icons/notifications.svg'
 import createIcon from '../assets/icons/create.svg'
 import logo from '../assets/ichgram-logo.png'
+import CreatePostModal from './CreatePostModal'
 
 const navigation = [
     {
@@ -52,6 +55,28 @@ const navigation = [
 
 function Sidebar() {
     const { me } = useFeed()
+    const [isSearchOpen, setIsSearchOpen] = useState(false)
+    const [isCreateOpen, setIsCreateOpen] = useState(false)
+
+    useEffect(() => {
+        if (!isSearchOpen) return
+
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') {
+                setIsSearchOpen(false)
+            }
+        }
+
+        window.addEventListener('keydown', handleKeyDown)
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown)
+        }
+    }, [isSearchOpen])
+
+    const closeSearch = () => {
+        setIsSearchOpen(false)
+    }
 
     return (
         <aside className={styles.sidebar}>
@@ -62,48 +87,110 @@ function Sidebar() {
             />
 
             <nav className={styles.navigation}>
-                {navigation.map((item) => (
-                    <NavLink
-                        key={item.path}
-                        to={item.path}
-                        end={item.path === '/'}
-                        className={({ isActive }) =>
-                            [
-                                styles.link,
-                                isActive ? styles.active : '',
-                            ]
-                                .filter(Boolean)
-                                .join(' ')
-                        }
-                    >
-                        {({ isActive }) => (
-                            <>
+                {navigation.map((item) => {
+                    if (item.path === '/search') {
+                        return (
+                            <button
+                                key={item.path}
+                                type="button"
+                                className={[
+                                    styles.link,
+                                    isSearchOpen ? styles.active : '',
+                                ]
+                                    .filter(Boolean)
+                                    .join(' ')}
+                                onClick={() =>
+                                    setIsSearchOpen((prev) => !prev)
+                                }
+                                aria-expanded={isSearchOpen}
+                                aria-controls="search-panel"
+                            >
                                 <img
                                     className={styles.icon}
                                     src={
-                                        isActive && item.activeIcon
-                                            ? item.activeIcon
-                                            : item.icon
+                                        isSearchOpen
+                                            ? searchActiveIcon
+                                            : searchIcon
                                     }
                                     alt=""
                                 />
 
                                 <span className={styles.label}>
-                                    {item.label}
+                                    Search
                                 </span>
+                            </button>
+                        )
+                    }
 
-                                {item.beta && (
-                                    <span className={styles.beta}>
-                                        Beta
+                    if (item.path === '/create') {
+                        return (
+                            <button
+                                key={item.path}
+                                type="button"
+                                className={styles.link}
+                                onClick={() => {
+                                    closeSearch()
+                                    setIsCreateOpen(true)
+                                }}
+                            >
+                                <img
+                                    className={styles.icon}
+                                    src={item.icon}
+                                    alt=""
+                                />
+
+                                <span className={styles.label}>
+                                    Create
+                                </span>
+                            </button>
+                        )
+                    }
+
+                    return (
+                        <NavLink
+                            key={item.path}
+                            to={item.path}
+                            end={item.path === '/'}
+                            onClick={closeSearch}
+                            className={({ isActive }) =>
+                                [
+                                    styles.link,
+                                    isActive ? styles.active : '',
+                                ]
+                                    .filter(Boolean)
+                                    .join(' ')
+                            }
+                        >
+                            {({ isActive }) => (
+                                <>
+                                    <img
+                                        className={styles.icon}
+                                        src={
+                                            isActive && item.activeIcon
+                                                ? item.activeIcon
+                                                : item.icon
+                                        }
+                                        alt=""
+                                    />
+
+                                    <span className={styles.label}>
+                                        {item.label}
                                     </span>
-                                )}
-                            </>
-                        )}
-                    </NavLink>
-                ))}
+
+                                    {item.beta && (
+                                        <span className={styles.beta}>
+                                            Beta
+                                        </span>
+                                    )}
+                                </>
+                            )}
+                        </NavLink>
+                    )
+                })}
 
                 <NavLink
-                    to="/profile"
+                    to={me?._id ? `/users/${me._id}` : '/'}
+                    onClick={closeSearch}
                     className={({ isActive }) =>
                         [
                             styles.link,
@@ -125,8 +212,19 @@ function Sidebar() {
                     </span>
                 </NavLink>
             </nav>
+
+            {isSearchOpen && (
+                <div id="search-panel">
+                    <SearchPanel onClose={closeSearch} />
+                </div>
+            )}
+            <CreatePostModal
+                isOpen={isCreateOpen}
+                onClose={() => setIsCreateOpen(false)}
+            />
         </aside>
     )
 }
 
 export default Sidebar
+

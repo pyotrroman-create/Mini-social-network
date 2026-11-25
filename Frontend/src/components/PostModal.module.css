@@ -111,8 +111,8 @@
 .authorInfo {
     display: flex;
     align-items: center;
-    flex: 0 0 326.26px;
-    width: 326.26px;
+    flex: 1;
+    width: auto;
     height: 22.03px;
     min-width: 0;
 }
@@ -435,4 +435,27 @@
     width: 20.34px;
     height: 20.34px;
     object-fit: contain;
+}
+
+.optionsButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 24px;
+    width: 24px;
+    height: 24px;
+    margin-left: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #262626;
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.optionsButton:hover {
+    opacity: 0.6;
 }

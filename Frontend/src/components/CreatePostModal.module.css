@@ -1,0 +1,265 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    box-sizing: border-box;
+    background: #000000a6;
+}
+
+.modal {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 913px;
+    max-width: 100%;
+    height: 564px;
+    max-height: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    background: #ffffff;
+    border-radius: 12px;
+}
+
+.header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 43px;
+    flex: 0 0 43px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #dbdbdb;
+    background: #ffffff;
+}
+
+.title {
+    margin: 0;
+    color: #000000;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    font-style: normal;
+    line-height: 24px;
+    letter-spacing: 0;
+    text-align: center;
+}
+
+.shareButton {
+    position: absolute;
+    top: 50%;
+    right: 15.8px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 84.04px;
+    height: 18px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #0095f6;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    font-style: normal;
+    line-height: 18px;
+    letter-spacing: 0;
+    text-align: right;
+    cursor: pointer;
+}
+
+.shareButton:disabled {
+    color: #b2dffc;
+    cursor: default;
+}
+
+.content {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    min-height: 0;
+}
+
+.imageSection {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 573 1 0;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    background: #fafafa;
+}
+
+
+.previewImage {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.uploadPlaceholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    gap: 0;
+    text-align: center;
+}
+
+.uploadTrigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 153.55px;
+    height: 153.55px;
+    flex-shrink: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.uploadIcon {
+    display: block;
+    width: 153.55px;
+    height: 153.55px;
+    object-fit: contain;
+}
+
+.uploadPlaceholder p {
+    display: none;
+}
+
+.selectButton {
+    display: none;
+}
+
+.fileInput {
+    display: none;
+}
+
+.details {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 340 1 0;
+    min-width: 0;
+    min-height: 0;
+    box-sizing: border-box;
+    border-left: 1px solid #dbdbdb;
+    background: #ffffff;
+}
+
+.author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+}
+
+.avatar {
+    display: block;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.username {
+    color: #262626;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 18px;
+}
+
+.captionInput {
+    display: block;
+    width: 100%;
+    height: 101px;
+    box-sizing: border-box;
+    padding: 0 16px;
+    resize: none;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #262626;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+}
+
+.captionInput::placeholder {
+    color: #737373;
+}
+
+.captionTools {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 12px 0 16.42px;
+}
+
+.emojiWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.emojiButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 19.17px;
+    height: 19.17px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.emojiButton img {
+    display: block;
+    width: 19.17px;
+    height: 19.17px;
+    object-fit: contain;
+}
+
+.emojiPicker {
+    position: absolute;
+    top: 32px;
+    left: 0;
+    z-index: 10;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.counter {
+    color: #737373;
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 11px;
+}
+
+.error {
+    margin: 8px 16px;
+    color: #ed4956;
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    line-height: 18px;
+}

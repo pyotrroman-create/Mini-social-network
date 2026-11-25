@@ -28,11 +28,18 @@ const userSchema = new mongoose.Schema({
         required: true
     },
 
+    website: {
+        type: String,
+        default: '',
+        trim: true,
+        maxlength: 2048
+    },
+
     bio: {
         type: String,
         default: '',
         trim: true,
-        maxlength: 500
+        maxlength: 150
     },
 
     profileImage: {

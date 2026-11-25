@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom'
 import {
     addPostComment,
+    deletePost,
     getPost,
     getPostLikes,
     getPostComments,
@@ -21,18 +22,16 @@ import commentIcon from '../assets/icons/comment.svg'
 import heartIcon from '../assets/icons/heart.svg'
 import heartFilledIcon from '../assets/icons/heart-filled.svg'
 import smileIcon from '../assets/icons/smile.svg'
+import PostOptionsModal from '../components/PostOptionsModal'
 
 function formatTime(date) {
     if (!date) return ''
-
     const timestamp = new Date(date).getTime()
     if (Number.isNaN(timestamp)) return ''
-
     const seconds = Math.max(
         0,
         Math.floor((Date.now() - timestamp) / 1000)
     )
-
     if (seconds < 60) return 'now'
     if (seconds < 3600) return `${Math.floor(seconds / 60)} min.`
     if (seconds < 86400) return `${Math.floor(seconds / 3600)} h.`
@@ -40,16 +39,13 @@ function formatTime(date) {
         const days = Math.floor(seconds / 86400)
         return `${days} ${days === 1 ? 'day.' : 'days.'}`
     }
-
     const weeks = Math.floor(seconds / 604800)
     return `${weeks} ${weeks === 1 ? 'week.' : 'weeks.'}`
 }
-
 function PostModal() {
     const { postId } = useParams()
     const navigate = useNavigate()
     const location = useLocation()
-
     const {
         me,
         loading: feedLoading,
@@ -58,7 +54,6 @@ function PostModal() {
         isLiked,
         updateLike,
     } = useFeed()
-
     const [post, setPost] = useState(null)
     const [author, setAuthor] = useState(null)
     const [likesCount, setLikesCount] = useState(0)
@@ -71,26 +66,22 @@ function PostModal() {
     const [showPicker, setShowPicker] = useState(false)
     const [liking, setLiking] = useState(false)
     const [following, setFollowing] = useState(false)
+    const [showOptions, setShowOptions] = useState(false)
+    const [deleting, setDeleting] = useState(false)
+    const [deleteError, setDeleteError] = useState('')
     const inputRef = useRef(null)
     const pickerRef = useRef(null)
     const cursorRef = useRef(0)
     const liked = isLiked(postId)
-
-
     useEffect(() => {
         const previousOverflow = document.body.style.overflow
-
         document.body.style.overflow = 'hidden'
-
         return () => {
             document.body.style.overflow = previousOverflow
         }
     }, [])
-
-
     useEffect(() => {
         let active = true
-
         async function loadPost() {
             setLoading(true)
             setError('')
@@ -98,32 +89,28 @@ function PostModal() {
             setAuthor(null)
             setComments([])
             setShowPicker(false)
+            setShowOptions(false)
+            setDeleteError('')
             setCommentText('')
-
             try {
                 const publication = await getPost(postId)
-
                 const authorId =
                     typeof publication.author === 'object'
                         ? publication.author._id
                         : publication.author
-
                 const [user, likes, postComments] =
                     await Promise.all([
                         getUser(authorId),
                         getPostLikes(postId),
                         getPostComments(postId),
                     ])
-
                 if (!active) return
-
                 setPost(publication)
                 setAuthor(user)
                 setLikesCount(likes)
                 setComments(postComments)
             } catch (err) {
                 console.error('Post loading error:', err)
-
                 if (active) {
                     setError('Failed to load publication')
                 }
@@ -133,21 +120,16 @@ function PostModal() {
                 }
             }
         }
-
         loadPost()
-
         return () => {
             active = false
         }
     }, [postId])
-
-
     const closeModal = useCallback(() => {
         if (location.state?.backgroundLocation) {
             navigate(-1)
             return
         }
-
         navigate(
             author?._id
                 ? `/users/${author._id}`
@@ -155,29 +137,25 @@ function PostModal() {
             { replace: true }
         )
     }, [location.state, navigate, author])
-
     useEffect(() => {
         const handleEscape = (event) => {
             if (event.key === 'Escape') {
-                if (showPicker) {
+                if (showOptions) {
+                    if (!deleting) setShowOptions(false)
+                } else if (showPicker) {
                     setShowPicker(false)
                 } else {
                     closeModal()
                 }
             }
         }
-
         document.addEventListener('keydown', handleEscape)
-
         return () => {
             document.removeEventListener('keydown', handleEscape)
         }
-    }, [showPicker, closeModal])
-
-
+    }, [showOptions, deleting, showPicker, closeModal])
     useEffect(() => {
         if (!showPicker) return
-
         const handleOutsideClick = (event) => {
             if (
                 pickerRef.current &&
@@ -186,9 +164,7 @@ function PostModal() {
                 setShowPicker(false)
             }
         }
-
         document.addEventListener('mousedown', handleOutsideClick)
-
         return () => {
             document.removeEventListener(
                 'mousedown',
@@ -196,13 +172,9 @@ function PostModal() {
             )
         }
     }, [showPicker])
-
-
     const handleFollow = async () => {
         if (!author || following || feedLoading) return
-
         setFollowing(true)
-
         try {
             await toggleFollow(author._id)
         } catch (err) {
@@ -211,12 +183,9 @@ function PostModal() {
             setFollowing(false)
         }
     }
-
     const handleLike = async () => {
         if (liking || feedLoading) return
-
         setLiking(true)
-
         try {
             if (liked) {
                 await unlikePost(postId)
@@ -233,24 +202,19 @@ function PostModal() {
             setLiking(false)
         }
     }
-
     const handleEmojiClick = (emojiData) => {
         const emoji = emojiData.emoji
         const position = Math.min(
             cursorRef.current,
             commentText.length
         )
-
         const nextText =
             commentText.slice(0, position) +
             emoji +
             commentText.slice(position)
-
         const nextPosition = position + emoji.length
-
         setCommentText(nextText)
         cursorRef.current = nextPosition
-
         requestAnimationFrame(() => {
             inputRef.current?.focus()
             inputRef.current?.setSelectionRange(
@@ -259,22 +223,15 @@ function PostModal() {
             )
         })
     }
-
     const handleSendComment = async (event) => {
         event.preventDefault()
-
         const text = commentText.trim()
-
         if (!text || sending) return
-
         setSending(true)
         setCommentError('')
-
         try {
             await addPostComment(postId, text)
-
             const updatedComments = await getPostComments(postId)
-
             setComments(updatedComments)
             setCommentText('')
             cursorRef.current = 0
@@ -286,26 +243,37 @@ function PostModal() {
             setSending(false)
         }
     }
-
     const focusComment = () => {
         const input = inputRef.current
-
         if (!input) return
-
         input.focus()
-
         const position = input.value.length
-
         input.setSelectionRange(position, position)
         cursorRef.current = position
     }
-
     const isOwnPost =
         me && author &&
         String(me._id) === String(author._id)
-
+    const handleDelete = async () => {
+        if (!isOwnPost || deleting) return
+        setDeleting(true)
+        setDeleteError('')
+        try {
+            await deletePost(postId)
+            setShowOptions(false)
+            window.dispatchEvent(new CustomEvent('post:deleted', {
+                detail: { postId },
+            }))
+            closeModal()
+        } catch (err) {
+            console.error('Delete post error:', err)
+            setDeleteError(err.response?.data?.message || 'Failed to delete post')
+            setShowOptions(false)
+        } finally {
+            setDeleting(false)
+        }
+    }
     const description = post?.caption ?? ''
-
     return (
         <div
             className={styles.overlay}
@@ -315,7 +283,6 @@ function PostModal() {
                 }
             }}
         >
-
             <div
                 className={styles.modal}
                 role="dialog"
@@ -327,13 +294,11 @@ function PostModal() {
                         Loading publication...
                     </p>
                 )}
-
                 {error && (
                     <p className={styles.status}>
                         {error}
                     </p>
                 )}
-
                 {!loading && !error && post && author && (
                     <>
                         <div className={styles.imageSection}>
@@ -342,7 +307,6 @@ function PostModal() {
                                 alt={`Post by ${author.username}`}
                             />
                         </div>
-
                         <div className={styles.details}>
                             <header className={styles.header}>
                                 <button
@@ -358,7 +322,6 @@ function PostModal() {
                                             src={author.profileImage || '/default-avatar.png'}
                                             alt=""
                                         />
-
                                         <img
                                             className={styles.avatarRing}
                                             src={avatarRing}
@@ -367,7 +330,6 @@ function PostModal() {
                                         />
                                     </span>
                                 </button>
-
                                 <div className={styles.authorInfo}>
                                     <button
                                         type="button"
@@ -378,11 +340,9 @@ function PostModal() {
                                     >
                                         {author.username}
                                     </button>
-
                                     {!isOwnPost && (
                                         <>
                                             <span className={styles.dot}>·</span>
-
                                             <button
                                                 type="button"
                                                 className={styles.followButton}
@@ -398,8 +358,18 @@ function PostModal() {
                                         </>
                                     )}
                                 </div>
+                                <button
+                                    type="button"
+                                    className={styles.optionsButton}
+                                    onClick={() => {
+                                        setDeleteError('')
+                                        setShowOptions(true)
+                                    }}
+                                    aria-label="Post options"
+                                >
+                                    •••
+                                </button>
                             </header>
-
                             <div className={styles.comments}>
                                 {description && (
                                     <div className={styles.descriptionItem}>
@@ -411,7 +381,6 @@ function PostModal() {
                                             }
                                             alt=""
                                         />
-
                                         <div className={styles.commentBody}>
                                             <p className={styles.commentText}>
                                                 <strong>
@@ -419,20 +388,17 @@ function PostModal() {
                                                 </strong>{' '}
                                                 {description}
                                             </p>
-
                                             <span className={styles.time}>
                                                 {formatTime(post.createdAt)}
                                             </span>
                                         </div>
                                     </div>
                                 )}
-
                                 {comments.map((comment) => {
                                     const commentUser =
                                         typeof comment.user === 'object'
                                             ? comment.user
                                             : null
-
                                     return (
                                         <div
                                             key={comment._id}
@@ -446,7 +412,6 @@ function PostModal() {
                                                 }
                                                 alt=""
                                             />
-
                                             <div className={styles.commentBody}>
                                                 <p className={styles.commentText}>
                                                     <strong>
@@ -455,7 +420,6 @@ function PostModal() {
                                                     </strong>{' '}
                                                     {comment.text}
                                                 </p>
-
                                                 <span className={styles.time}>
                                                     {formatTime(
                                                         comment.createdAt
@@ -466,7 +430,6 @@ function PostModal() {
                                     )
                                 })}
                             </div>
-
                             <div className={styles.actions}>
                                 <div className={styles.actionButtons}>
                                     <button
@@ -486,7 +449,6 @@ function PostModal() {
                                             className={styles.actionIcon}
                                         />
                                     </button>
-
                                     <button
                                         type="button"
                                         className={styles.iconButton}
@@ -500,16 +462,13 @@ function PostModal() {
                                         />
                                     </button>
                                 </div>
-
                                 <strong className={styles.likesCount}>
                                     {likesCount} likes
                                 </strong>
-
                                 <span className={styles.postTime}>
                                     {formatTime(post.createdAt).replace(/\./g, '')}
                                 </span>
                             </div>
-
                             <form
                                 className={styles.commentForm}
                                 onSubmit={handleSendComment}
@@ -531,12 +490,9 @@ function PostModal() {
                                             alt=""
                                             className={styles.emojiIcon}
                                         />
-
                                     </button>
-
                                     {showPicker && (
                                         <div className={styles.emojiPicker}>
-
                                             <EmojiPicker
                                                 onEmojiClick={handleEmojiClick}
                                                 emojiStyle={EmojiStyle.APPLE}
@@ -544,11 +500,9 @@ function PostModal() {
                                                 height={380}
                                                 searchPlaceHolder="Search emoji"
                                             />
-
                                         </div>
                                     )}
                                 </div>
-
                                 <input
                                     ref={inputRef}
                                     className={styles.commentInput}
@@ -570,7 +524,6 @@ function PostModal() {
                                             event.target.selectionStart ?? 0
                                     }}
                                 />
-
                                 <button
                                     type="submit"
                                     className={styles.sendButton}
@@ -581,7 +534,11 @@ function PostModal() {
                                     Send
                                 </button>
                             </form>
-
+                            {deleteError && (
+                                <p className={styles.commentError} role="alert">
+                                    {deleteError}
+                                </p>
+                            )}
                             {commentError && (
                                 <p className={styles.commentError}>
                                     {commentError}
@@ -591,9 +548,17 @@ function PostModal() {
                     </>
                 )
                 }
-            </div >
-        </div >
+            </div>
+            <PostOptionsModal
+                isOpen={showOptions}
+                isOwnPost={Boolean(isOwnPost)}
+                onClose={() => {
+                    if (!deleting) setShowOptions(false)
+                }}
+                onDelete={handleDelete}
+                deleting={deleting}
+            />
+        </div>
     )
 }
-
 export default PostModal

@@ -120,6 +120,17 @@ export function FeedProvider({ children }) {
         })
     }
 
+    const updateMe = (user) => {
+        setData((current) => {
+            if (current.token !== token) return current
+
+            return {
+                ...current,
+                me: user,
+            }
+        })
+    }
+
     const toggleFollow = async (userId) => {
         if (loading) return
 
@@ -147,6 +158,7 @@ export function FeedProvider({ children }) {
             }
         })
     }
+
     return (
         <FeedContext.Provider
             value={{
@@ -156,6 +168,7 @@ export function FeedProvider({ children }) {
                 isLiked,
                 isFollowing,
                 updateLike,
+                updateMe,
                 toggleFollow,
             }}
         >

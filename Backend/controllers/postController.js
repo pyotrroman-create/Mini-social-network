@@ -1,6 +1,8 @@
 const Post = require('../models/Post');
 const mongoose = require('mongoose');
 const validateImage = require('../utils/validateImage');
+const Like = require('../models/Like');
+const Comment = require('../models/Comment');
 
 const createPost = async (req, res) => {
     try {
@@ -10,19 +12,18 @@ const createPost = async (req, res) => {
             });
         }
 
+
         const { caption } = req.body;
 
-        if (caption !== undefined) {
-            if (
-                typeof caption !== 'string' ||
-                caption.trim().length > 2200
-            ) {
-                return res.status(400).json({
-                    message: 'Caption must be a string of up to 2200 characters'
-                });
-            }
+        if (
+            typeof caption !== 'string' ||
+            caption.trim().length === 0 ||
+            caption.trim().length > 2200
+        ) {
+            return res.status(400).json({
+                message: 'Caption is required and must be 1–2200 characters'
+            });
         }
-
         if (!validateImage(req.file)) {
             return res.status(400).json({
                 message: 'Invalid image format'
@@ -161,6 +162,7 @@ const updatePost = async (req, res) => {
         if (caption !== undefined) {
             if (
                 typeof caption !== 'string' ||
+                caption.trim().length === 0 ||
                 caption.trim().length > 2200
             ) {
                 return res.status(400).json({
@@ -199,6 +201,7 @@ const updatePost = async (req, res) => {
     }
 };
 
+
 const deletePost = async (req, res) => {
     try {
         const { id } = req.params;
@@ -223,6 +226,8 @@ const deletePost = async (req, res) => {
             });
         }
 
+        await Like.deleteMany({ post: post._id });
+        await Comment.deleteMany({ post: post._id });
         await post.deleteOne();
 
         return res.status(200).json({
@@ -237,6 +242,7 @@ const deletePost = async (req, res) => {
         });
     }
 };
+
 
 const getExplorePosts = async (req, res) => {
     try {
